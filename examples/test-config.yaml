@@ -1,0 +1,22 @@
+version: "1.0"
+
+rules:
+  # Allow DNS to specific servers
+  - name: allow-dns
+    action: allow
+    order: 100
+    egress:
+      protocols: [udp, tcp]
+      ips: ["8.8.8.8", "1.1.1.1"]
+      ports: ["53"]
+
+  # Allow HTTPS to google.com
+  - name: allow-google
+    action: allow
+    order: 200
+    egress:
+      protocols: [tcp]
+      domains: ["google.com", "www.google.com"]
+      ports: ["443"]
+
+  # Block everything else (implicit - default drop policy)

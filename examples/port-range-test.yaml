@@ -1,0 +1,31 @@
+version: "1.0"
+
+rules:
+  # Allow DNS
+  - name: allow-dns
+    action: allow
+    order: 100
+    egress:
+      protocols: [udp, tcp]
+      ips: ["8.8.8.8", "1.1.1.1"]
+      ports: ["53"]
+
+  # Allow HTTPS to api.github.com
+  - name: allow-github-api
+    action: allow
+    order: 100
+    egress:
+      protocols: [tcp]
+      domains: ["api.github.com"]
+      ports: ["443"]
+
+  # Test port range - allow ports 8000-9000 to internal network
+  - name: allow-internal-range
+    action: allow
+    order: 200
+    egress:
+      protocols: [tcp]
+      ips: ["10.0.0.0/8"]
+      ports: ["8000-9000", "3000"]  # Mix of range and single port
+
+  # Everything else blocked (default drop)

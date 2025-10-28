@@ -1,0 +1,64 @@
+version: "1.0"
+
+# Default Legion Router configuration
+# Allows access to essential development services while blocking everything else
+
+rules:
+  # Block cloud metadata service (security)
+  - name: block-metadata-service
+    action: deny
+    order: 10
+    egress:
+      ips: ["169.254.169.254"]
+
+  # Allow DNS
+  - name: allow-dns
+    action: allow
+    order: 50
+    egress:
+      protocols: [udp, tcp]
+      ports: ["53"]
+
+  # Allow SSH
+  - name: allow-ssh
+    action: allow
+    order: 50
+    egress:
+      protocols: [tcp]
+      ports: ["22"]
+
+  # Allow GitHub (web, API, git)
+  - name: allow-github
+    action: allow
+    order: 100
+    egress:
+      protocols: [tcp]
+      domains: ["github.com", "api.github.com", "*.github.com"]
+      ports: ["443", "22"]
+
+  # Allow npm registry
+  - name: allow-npm
+    action: allow
+    order: 100
+    egress:
+      protocols: [tcp]
+      domains: ["registry.npmjs.org"]
+      ports: ["443"]
+
+  # Allow Claude API
+  - name: allow-anthropic
+    action: allow
+    order: 100
+    egress:
+      protocols: [tcp]
+      domains: ["api.anthropic.com", "statsig.anthropic.com"]
+      ports: ["443"]
+
+  # Allow ICMP (ping)
+  - name: allow-icmp
+    action: allow
+    order: 300
+    egress:
+      protocols: [icmp]
+
+  # Everything else is blocked (default drop)
